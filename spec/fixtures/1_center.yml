@@ -1,0 +1,6 @@
+---
+- id: 1
+  short_name: "PRN"
+  slug: "prineville"
+  display_name: "Prineville, OR"
+  zone_name: "America/Los_Angeles"

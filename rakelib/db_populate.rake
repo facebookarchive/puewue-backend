@@ -1,0 +1,92 @@
+namespace :db do
+  desc "Seed index with fake measurements"
+  task :populate, [:days] => [:environment, :datacenters] do |t, args|
+    require "power/datacenter"
+    require "power/analyzer/entry"
+    require "power/analyzer/point_builder"
+    require "power/importer"
+    require "tire"
+
+    class Timestamp < Struct.new(:time)
+      def to_lucene
+        time.strftime("%Y-%m-%dT%H:%M:%S")
+      end
+
+      def to_i
+        time.to_i
+      end
+    end
+
+    args.with_defaults(:days => "5")
+
+    # entries per day
+    per_day = 1_440
+
+    # possible ranges
+    pue_range         = (1.01)..(1.02)
+    wue_range         = (0.41)..(0.42)
+    humidity_range    = (23.01)..(23.02)
+    temperature_range = (44.05)..(44.08)
+    names             = ["Timestamp", "PUE", "WUE", "Temp", "humidity"]
+    datacenters       = Power::Datacenter.all
+
+    hour = 3_600
+    day  = 86_400
+    days = args.days.to_i
+
+    # between days ago and tomorrow
+    now = Time.now.utc
+    start_date = now - (days * day)
+    end_date   = now + day
+
+    entries = []
+
+    puts "Building fake entries..."
+
+    current = start_date
+    while current < end_date
+      start_hour = current - (current.min * 60) - current.sec
+
+      builder = Power::Analyzer::PointBuilder.new(names)
+
+      60.times do |offset|
+        timestamp = Time.at(start_hour + (offset * 60))
+
+        datacenters.each do |datacenter|
+          values = [
+            timestamp.to_s,
+            rand(pue_range).round(2),
+            rand(wue_range).round(2),
+            rand(temperature_range).round(2),
+            rand(humidity_range).round(2)
+          ]
+
+          points = builder.build(values)
+          entry  = Power::Analyzer::Entry.new(datacenter, points)
+
+          entries.push entry
+        end
+      end
+
+      current += hour
+    end
+
+    puts "Computed #{entries.size} fake entries."
+
+    puts "About to import entries into index..."
+
+    index = Tire.index "measurements"
+    importer = Power::Importer.new(index)
+
+    while entries.any?
+      batch = entries.shift(200)
+
+      importer.import batch
+
+      print "."
+      $stdout.flush
+    end
+
+    puts "\nDone importing."
+  end
+end

@@ -1,0 +1,7 @@
+/.bundle
+/.env.*
+/config/datacenters.yml
+/coverage
+/csv
+/sftp_private.key
+/tmp
