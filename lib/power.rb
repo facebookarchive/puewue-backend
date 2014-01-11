@@ -2,7 +2,6 @@ require "sinatra/base"
 require "sinatra/get_or_post"
 require "i18n"
 
-require "helpers/assets_helper"
 require "helpers/json_helper"
 require "helpers/lookup_helper"
 require "helpers/presentation_helper"
@@ -16,11 +15,8 @@ module Power
     extend Sinatra::GetOrPost
 
     set :root, File.expand_path("../..", __FILE__)
-    set :sprockets, Sprockets::Environment.new
 
     configure do
-      AssetsHelper.configure! sprockets, root
-
       # Load all i18n files (locales/*.yml)
       I18n.load_path.concat Dir[File.join(settings.root, "locales", "*.yml")]
 
@@ -47,7 +43,6 @@ module Power
     end
 
     helpers do
-      include AssetsHelper
       include JsonHelper
       include LookupHelper
       include PresentationHelper
