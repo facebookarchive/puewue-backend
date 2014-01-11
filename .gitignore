@@ -4,5 +4,6 @@
 /config/datacenters.yml
 /coverage
 /csv
+/public/assets/*
 /sftp_private.key
 /tmp
