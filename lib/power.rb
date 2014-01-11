@@ -1,6 +1,5 @@
 require "sinatra/base"
 require "sinatra/get_or_post"
-require "i18n"
 
 require "helpers/json_helper"
 require "helpers/lookup_helper"
@@ -17,9 +16,6 @@ module Power
     set :root, File.expand_path("../..", __FILE__)
 
     configure do
-      # Load all i18n files (locales/*.yml)
-      I18n.load_path.concat Dir[File.join(settings.root, "locales", "*.yml")]
-
       # disable frame protection
       set :protection, except: [:frame_options]
 
