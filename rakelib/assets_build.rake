@@ -4,7 +4,7 @@ namespace :assets do
   module_root = File.join("assets", "dashboard-ui")
   source_root = File.join(module_root, "build")
   assets_root = File.join("public", "assets")
-  filenames   = %w(dashboard.min.css dashboard.min.js)
+  filenames   = %w(dashboard.min.css dashboard.min.js sprite.png)
 
   source_files = filenames.collect { |filename|
     File.join(source_root, filename)
