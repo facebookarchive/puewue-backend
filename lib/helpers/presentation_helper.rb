@@ -12,8 +12,4 @@ module PresentationHelper
   def page_title(title = nil)
     [title, t("site.title")].compact.join(" - ")
   end
-
-  def t(*args)
-    I18n.t(*args)
-  end
 end
