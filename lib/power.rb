@@ -27,12 +27,6 @@ module Power
       Datacenter.from_file("config/datacenters.yml")
     end
 
-    configure :staging do
-      use Rack::Auth::Basic, "Power!" do |username, password|
-        username == "power" && password == "allgreen"
-      end
-    end
-
     configure :staging, :production do
       require "rack/ssl"
       use Rack::SSL
@@ -42,10 +36,6 @@ module Power
       include JsonHelper
       include LookupHelper
       include PresentationHelper
-    end
-
-    get_or_post "/faq" do
-      erb :faq, :layout => false
     end
 
     get "/timeline/:datacenter_slug/:period.json" do
