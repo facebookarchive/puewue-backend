@@ -1,0 +1,11 @@
+---
+- id: 99
+  short_name: "PRN"
+  slug: "prineville"
+  display_name: "Prineville, OR"
+  zone_name: "America/Los_Angeles"
+  extra:
+    annual_numbers: true
+    annual_pue: 0.00
+    annual_wue: 0.00
+    fbapp_id: 12345

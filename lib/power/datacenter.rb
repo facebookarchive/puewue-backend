@@ -1,3 +1,4 @@
+require "ostruct"
 require "psych"
 
 module Power
@@ -14,9 +15,8 @@ module Power
   class Datacenter
     attr_reader :id, :short_name, :slug, :zone_name
 
-    attr_accessor :annual_numbers, :display_name, :annual_pue, :annual_wue
-    attr_accessor :facebook_app_id
-    attr_accessor :state
+    attr_accessor :display_name
+    attr_accessor :extra
 
     # Public: Add a datacenter entry to global registry.
     #
@@ -150,13 +150,8 @@ module Power
       record = add(data["id"], data["short_name"],
                     data["slug"], data["zone_name"])
 
-      record.display_name   = data["display_name"]
-
-      record.annual_numbers = data["annual_numbers"]
-      record.annual_pue     = data["annual_pue"]
-      record.annual_wue     = data["annual_wue"]
-
-      record.facebook_app_id = data["facebook_app_id"]
+      record.display_name = data["display_name"]
+      record.extra        = OpenStruct.new(data["extra"])
 
       record
     end

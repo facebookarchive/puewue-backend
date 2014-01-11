@@ -161,5 +161,16 @@ describe Power::Datacenter do
         entry.zone_name.must_equal "America/Los_Angeles"
       end
     end
+
+    context "given a file with extra information" do
+      let(:config_file) { File.expand_path("../../fixtures/center_extra.yml", __FILE__) }
+
+      it "parse and load extra information" do
+        entry = Power::Datacenter.by_id(99)
+
+        entry.extra.must_be_instance_of OpenStruct
+        entry.extra.annual_numbers.must_equal true
+      end
+    end
   end
 end

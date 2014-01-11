@@ -1,20 +1,21 @@
 ---
 - id: 1
-  facebook_app_id: 000000000000001
   short_name: "DC1"
   slug: "center-1"
   display_name: "Our Datacenter, Somewhere"
-  state: "OR"
   zone_name: "America/Los_Angeles"
-  annual_numbers: true
-  annual_pue: 0.00
-  annual_wue: 0.00
+  extra:
+    annual_numbers: true
+    annual_pue: 0.00
+    annual_wue: 0.00
+    facebook_app_id: 000000000000001
 
 - id: 2
   short_name: "DC2"
   slug: "center-2"
   display_name: "Another datacenter, NY"
   zone_name: "America/New_York"
-  annual_numbers: true
-  annual_pue: 0.00
-  annual_wue: 0.00
+  extra:
+    annual_numbers: true
+    annual_pue: 0.00
+    annual_wue: 0.00
