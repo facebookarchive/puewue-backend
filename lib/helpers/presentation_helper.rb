@@ -10,6 +10,6 @@ module PresentationHelper
   end
 
   def page_title(title = nil)
-    [title, t("site.title")].compact.join(" - ")
+    [title, "Power Dashboard"].compact.join(" - ")
   end
 end

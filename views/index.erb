@@ -114,6 +114,7 @@
 
         </div> <!-- / .hero-feature__row -->
 
+        <% if datacenter.extra.annual_numbers %>
         <div class="hero-feature__row--boxout">
 
           <section class="boxout">
@@ -126,7 +127,7 @@
 
               <section class="boxout__data-col">
                 <h4>PUE</h4>
-                <div class="large-chars">1.09</div>
+                <div class="large-chars"><%= decimal(datacenter.extra.annual_pue) %></div>
                 <div class="item-label-note">
                   TTM
                 </div>
@@ -134,7 +135,7 @@
 
               <section class="boxout__data-col">
                 <h4>WUE</h4>
-                <div class="large-chars">.51</div>
+                <div class="large-chars"><%= decimal(datacenter.extra.annual_wue) %></div>
                 <div class="item-label-note">
                   TTM
                 </div>
@@ -145,6 +146,7 @@
           </section>
 
         </div> <!-- / .hero-feature__row -->
+        <% end %>
 
       </div> <!-- / .hero-feature -->
 
