@@ -4,7 +4,7 @@ ruby "1.9.3"
 
 gem "unicorn", "~> 4.6.3"
 
-gem "dotenv",   "~> 0.8.0"
+gem "dotenv",   "~> 0.9.0"
 gem "sinatra",  "~> 1.3.6"
 gem "rack-ssl", "~> 1.3.3"
 
