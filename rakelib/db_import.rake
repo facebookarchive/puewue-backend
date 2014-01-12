@@ -15,11 +15,20 @@ namespace :db do
     require "tire"
     require "batch"
 
-    analyzer = Power::Analyzer.new
-
     start = Time.now
+    index = Tire.index "measurements"
+    importer = Power::Importer.new(index)
 
-    puts "[import] About to analyze #{files.size} CSV files... (#{start})"
+    puts "[import] About to analyze and import #{files.size} CSV files... (#{start})"
+
+    def archive(filename)
+      # move file into archive folder
+      archive_file = File.join(File.dirname(filename), "archive", File.basename(filename))
+
+      # ensure target directory exists
+      FileUtils.mkdir_p File.dirname(archive_file)
+      FileUtils.mv filename, archive_file
+    end
 
     Batch.each(files) do |filename|
       unless File.exists?(filename)
@@ -28,43 +37,28 @@ namespace :db do
       end
 
       # file will be closed by Analyzer
+      analyzer = Power::Analyzer.new
+
       file = File.open(filename, "r")
       analyzer.analyze(file)
-    end
 
-    if analyzer.entries.any?
-      puts "Collected #{analyzer.entries.size} entries to be imported."
+      if analyzer.entries.any?
+        entries = analyzer.entries
 
-      index = Tire.index "measurements"
-      importer = Power::Importer.new(index)
+        while entries.any?
+          batch = entries.shift(200)
 
-      puts "Importing entries..."
-      entries = analyzer.entries
-
-      while entries.any?
-        batch = entries.shift(200)
-
-        importer.import batch
-
-        print "."
-        $stdout.flush
+          importer.import batch
+        end
+      else
+        # archive empty file
+        archive filename
+        raise RuntimeError, "No entries found to be imported."
+        next
       end
 
-      puts "\nImport completed."
-    else
-      puts "No entries found to be imported."
-    end
-
-    puts "Moving files into archive folder..."
-
-    files.each do |filename|
-      next unless File.exists?(filename)
-
-      archive_file = File.join(File.dirname(filename), "archive", File.basename(filename))
-
-      # ensure target directory exists
-      FileUtils.mkdir_p File.dirname(archive_file)
-      FileUtils.mv filename, archive_file
+      # archive successful/processed file
+      archive filename
     end
 
     duration = Time.now - start

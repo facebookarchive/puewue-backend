@@ -9,45 +9,39 @@ namespace :sftp do
     require "batch"
 
     start = Time.now
+    index = Tire.index "measurements"
+    importer = Power::Importer.new(index)
 
     puts "[work] Checking pending Data files... (#{start})"
 
     data_files = Power::DataFile.pending
 
     if data_files.size > 0
-      analyzer  = Power::Analyzer.new
-      filenames = []
-
-      puts "About to analyze #{data_files.size} CSV files..."
+      puts "About to analyze and import #{data_files.size} CSV files..."
 
       Batch.each(data_files) do |data_file|
-        filenames.push data_file.filename
+        analyzer  = Power::Analyzer.new
 
         # mark as being processed
         data_file.process!
 
         # analyze the entries
         analyzer.analyze(data_file.contents)
-      end
 
-      if analyzer.entries.any?
-        puts "Collected #{analyzer.entries.size} entries to be imported."
+        if analyzer.entries.any?
+          entries = analyzer.entries
 
-        index = Tire.index "measurements"
-        importer = Power::Importer.new(index)
+          while entries.any?
+            batch = entries.shift(200)
 
-        puts "Importing entries..."
-        importer.import analyzer.entries
-        puts "Import completed."
-      else
-        puts "No entries found to be imported."
-      end
-
-      # FIXME: Marking files shouldn't happen during analyze stage?
-      puts "Marking pending data files as imported..."
-
-      Power::DataFile.in_process.each do |data_file|
-        next unless filenames.include?(data_file.filename)
+            importer.import batch
+          end
+        else
+          # archive empty file
+          data_file.complete!
+          raise RuntimeError, "No entries found to be imported."
+          next
+        end
 
         data_file.complete!
       end
