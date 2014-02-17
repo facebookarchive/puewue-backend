@@ -1,6 +1,8 @@
 require "rake/clean"
 
 namespace :assets do
+  # TODO: update to use public repository URL once we open-source it
+  git_url     = "git@github.com:LyricaMcT/dashboard-ui.git"
   module_root = File.join("assets", "dashboard-ui")
   source_root = File.join(module_root, "build")
   assets_root = File.join("public", "assets")
@@ -37,7 +39,7 @@ namespace :assets do
     end
   end
 
-  task :packages => [:submodule] do
+  task :packages => [:clone] do
     checkpoint = File.join("assets", ".installed")
 
     unless File.exists?(checkpoint)
@@ -59,8 +61,10 @@ namespace :assets do
     end
   end
 
-  task :submodule do
-    File.exists?(File.join(module_root, "gulpfile.js")) or
-      sh "git submodule update --init"
+  task :clone do
+    unless File.exists?(File.join(module_root, "gulpfile.js"))
+      mkdir_p File.dirname(module_root)
+      sh "git clone --branch=master #{git_url} #{module_root}"
+    end
   end
 end
