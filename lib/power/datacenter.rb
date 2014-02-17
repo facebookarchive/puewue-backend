@@ -137,6 +137,7 @@ module Power
 
     def initialize(id, short_name, slug, zone_name = nil)
       @id         = Integer(id)
+      @extra      = OpenStruct.new
       @short_name = String(short_name)
       @slug       = String(slug)
       @zone_name  = String(zone_name)
