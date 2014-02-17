@@ -1,15 +1,14 @@
 module Power
   class Collector
     ROUND_PRECISION = 3
-    POINT_NAMES     = ["pue", "wue", "humidity", "temperature"]
-    CACHE_VERSION   = "v2"
+    CACHE_VERSION   = "v7"
 
     attr_accessor :index, :datacenter_id, :interval, :range
 
-    def initialize(index, datacenter_id, interval = nil, range = nil)
+    def initialize(index, datacenter_id, interval, range)
       @index         = index
       @datacenter_id = datacenter_id
-      @interval      = interval || "1m"
+      @interval      = interval
       @range         = range
     end
 
@@ -43,31 +42,43 @@ module Power
     end
 
     def build_entry(index)
-      keys = facet_keys
+      keys     = facet_keys
       base_key = keys.first
 
       result = {
         :timestamp => facet_entry(base_key, index)["time"],
       }
 
-      keys.each do |key|
-        entry = facet_entry(key, index)
+      ["temperature", "humidity"].each do |key|
+        collect_values(key, index, result)
+      end
 
-        # skip key entirely if there is nothing
-        unless Integer(entry["total_count"]) > 0
-          result[key.to_sym] = 0
-          next
-        end
+      util_kwh_entry = facet_entry("util_kwh", index)
+      it_kwh_a_entry = facet_entry("it_kwh_a", index)
+      it_kwh_b_entry = facet_entry("it_kwh_b", index)
+      twu_entry      = facet_entry("twu", index)
 
-        mean  = entry["mean"]
-        min   = entry["min"]
-        max   = entry["max"]
+      computed_pue_entry = facet_entry("computed_pue", index)
+      computed_wue_entry = facet_entry("computed_wue", index)
 
-        result[key.to_sym] = Float(mean).round(ROUND_PRECISION)
+      pue              = calculate(util_kwh_entry, it_kwh_a_entry)
+      min_pue, max_pue = calculate_min_max(computed_pue_entry)
 
-        # min_:key and max_:key
-        result[:"min_#{key}"] = Float(min).round(ROUND_PRECISION)
-        result[:"max_#{key}"] = Float(max).round(ROUND_PRECISION)
+      result[:pue] = pue ? pue : nil
+
+      if min_pue && max_pue
+        result[:min_pue] = min_pue
+        result[:max_pue] = max_pue
+      end
+
+      wue              = calculate(twu_entry, it_kwh_b_entry)
+      min_wue, max_wue = calculate_min_max(computed_wue_entry)
+
+      result[:wue] = wue ? wue : nil
+
+      if min_wue && max_wue
+        result[:min_wue] = min_wue
+        result[:max_wue] = max_wue
       end
 
       result
@@ -77,7 +88,6 @@ module Power
       query_results.facets[key]["entries"][index]
     end
 
-    # TODO: Complex as hell, refactor
     def build_query
       return @build_query if defined?(@build_query)
 
@@ -87,15 +97,13 @@ module Power
 
           f.filter :term, :datacenter_id => datacenter_id
 
-          if range
-            f.filter :range, :timestamp => {
-                              :from => range.begin, :to => range.end
-            }
-          end
+          f.filter :range, :timestamp => {
+                            :from => range.begin, :to => range.end
+          }
         end
       end
 
-      POINT_NAMES.each do |point|
+      point_names.each do |point|
         index.facet point do |facet|
           facet.date :timestamp, :value_field => point, :interval => interval
         end
@@ -104,8 +112,51 @@ module Power
       @build_query = index
     end
 
-    def lucene(datetime)
-      datetime.strftime("%Y-%m-%dT%H:%M:%S")
+    def collect_values(key, index, result)
+      entry = facet_entry(key, index)
+
+      if entry && Integer(entry["total_count"]) > 0
+        mean  = entry["mean"]
+        min   = entry["min"]
+        max   = entry["max"]
+
+        result[key.to_sym] = Float(mean).round(ROUND_PRECISION)
+
+        # min_:key and max_:key
+        result[:"min_#{key}"] = Float(min).round(ROUND_PRECISION)
+        result[:"max_#{key}"] = Float(max).round(ROUND_PRECISION)
+      else
+        result[key.to_sym] = nil
+      end
+    end
+
+    def point_names
+      @point_names ||= ["temperature", "humidity", "util_kwh",
+                        "it_kwh_a", "it_kwh_b", "twu",
+                        "computed_pue", "computed_wue"]
+    end
+
+    def calculate(num_entry, den_entry)
+      return unless [num_entry, den_entry].all? { |e|
+        e && e["total_count"] > 0
+      }
+
+      numerator   = Float(num_entry["total"])
+      denominator = Float(den_entry["total"])
+
+      # SUM(numerator) / SUM(denominator)
+      (numerator / denominator).round(ROUND_PRECISION)
+    end
+
+    def calculate_min_max(computed_entry)
+      return unless computed_entry && computed_entry["total_count"] > 0
+
+      minimum = maximum = nil
+
+      minimum = Float(computed_entry["min"]).round(ROUND_PRECISION)
+      maximum = Float(computed_entry["max"]).round(ROUND_PRECISION)
+
+      [minimum, maximum]
     end
   end
 end
