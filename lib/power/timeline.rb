@@ -43,15 +43,15 @@ module Power
     def determine_period
       case period
       when "24-hours"
-        ["1m", days_back(24, 2.5)]
+        ["5m", days_back(24, 2.5)]
       when "7-days"
-        ["15m", days_back(168)]
+        ["1.25h", days_back(168)]
       when "30-days"
-        ["1h", days_back(720)]
+        ["5h", days_back(720)]
       when "90-days"
-        ["3h", days_back(2160)]
+        ["15h", days_back(2160)]
       when "1-year"
-        ["1d", days_back(8760)]
+        ["5d", days_back(8760)]
       end
     end
 
