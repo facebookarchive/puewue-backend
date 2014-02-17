@@ -1,4 +1,0 @@
-[submodule "dashboard-ui"]
-	path = assets/dashboard-ui
-	url = git@github.com:LyricaMcT/dashboard-ui.git
-	branch = master
