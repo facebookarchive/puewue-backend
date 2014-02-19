@@ -3,8 +3,6 @@
 Simple application that displays Facebook's datacenter power consumption and
 other information.
 
-For detailed information on the application's front-end architecture, please visit the [wiki]("https://github.com/LyricaMcT/PUE-WUE-Dashboard/wiki/PUE-WUE-Dashboard").
-
 ## Development requirements
 
 To run this application locally, you will need:
