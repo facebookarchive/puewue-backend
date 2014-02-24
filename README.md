@@ -104,4 +104,6 @@ For deployment instructions, please see [DEPLOY](DEPLOY.md) document.
 
 ## Licensing
 
-The source of this project is licensed under Apache License 2.0. See [LICENSE](LICENSE).
+The source code is licensed under the BSD-style license found in the
+[LICENSE](LICENSE) file found in the root directory of this source tree. An
+additional grant of patent rights can be found inside the same file.
