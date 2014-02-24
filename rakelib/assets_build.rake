@@ -11,7 +11,7 @@ require "rake/clean"
 
 namespace :assets do
   # TODO: update to use public repository URL once we open-source it
-  git_url     = "git@github.com:LyricaMcT/dashboard-ui.git"
+  git_url     = "https://github.com/facebook/puewue-frontend.git"
   module_root = File.join("assets", "dashboard-ui")
   source_root = File.join(module_root, "build")
   assets_root = File.join("public", "assets")
