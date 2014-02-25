@@ -105,5 +105,6 @@ For deployment instructions, please see [DEPLOY](DEPLOY.md) document.
 ## Licensing
 
 The source code is licensed under the BSD-style license found in the
-[LICENSE](LICENSE) file found in the root directory of this source tree. An
-additional grant of patent rights can be found inside the same file.
+[LICENSE](LICENSE) file in the root directory of this source tree. An
+additional grant of patent rights can be found in the [PATENTS](PATENTS) file
+in the same directory.
