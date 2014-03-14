@@ -1,7 +1,8 @@
 # Facebook Power
 
 Simple application that displays Facebook's datacenter power consumption and
-other information.
+other information. Use this in conjunction with the front-end project: 
+https://github.com/facebook/puewue-frontend
 
 ## Development requirements
 
