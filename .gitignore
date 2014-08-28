@@ -1,4 +1,5 @@
 /.bundle
+/.env
 /.env.*
 /assets/*
 /config/datacenters.yml

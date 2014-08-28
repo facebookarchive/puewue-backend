@@ -1,8 +1,7 @@
 # Facebook Power
 
 Simple application that displays Facebook's datacenter power consumption and
-other information. Use this in conjunction with the front-end project: 
-https://github.com/facebook/puewue-frontend
+other information. Use this in conjunction with the [front-end project](https://github.com/facebook/puewue-frontend)
 
 ## Development requirements
 
@@ -41,11 +40,11 @@ You will normally access the application by visiting `http://localhost:5000/`
 To test the application locally, it will be necessary populate ElasticSearch
 with enough information to generate histograms.
 
-First, start ElasticSearch and then perform the following tasks:
+First, start ElasticSearch, then reset `measurements` index by running:
 
     rake db:reset
 
-To reset the `measurements` index in ElasticSearch. Next:
+Next, you would like to populate the index with some fake data, so run:
 
     rake db:populate
 
@@ -98,6 +97,9 @@ Simply create `.env.test` with the environment variables you need, for example,
 
 This will use a different URL when running tests (in this case, a different
 DB on the same Redis).
+
+You can look at [env.sample](env.sample) for other variables used by this
+application.
 
 ## Deployment
 
