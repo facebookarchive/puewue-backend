@@ -10,6 +10,7 @@ gem "rack-ssl", "~> 1.3.3"
 
 gem "net-sftp",      "~> 2.1.1"
 gem "psych",         "~> 1.3.4"
+gem "redis",         "~> 3.1.0"
 gem "oj",            "~> 2.0.14"
 gem "multi_json",    "~> 1.8.2"
 gem "tire",          "~> 0.5.8"

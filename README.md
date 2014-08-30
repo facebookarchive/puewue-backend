@@ -11,6 +11,7 @@ To run this application locally, you will need:
 - Bundler (`gem install bundler`)
 - Foreman (`gem install foreman`)
 - ElasticSearch (0.20.4 at this time)
+- Redis
 
 ### Installing dependencies
 
