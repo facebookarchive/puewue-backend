@@ -1,0 +1,17 @@
+# fig.yml
+
+# This YAML file provides a manifest of services wrapped as Docker containers
+# to be usable during development.
+#
+# For more details on usage, please refer Fig documentation: http://fig.sh/
+
+---
+redis:
+  image: mini/redis
+  ports:
+    - "6379:6379"
+
+search:
+  image: mini/elasticsearch:0.20
+  ports:
+    - "9200:9200"
