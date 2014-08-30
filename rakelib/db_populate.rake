@@ -36,7 +36,11 @@ namespace :db do
     wue_range         = (0.41)..(0.42)
     humidity_range    = (23.01)..(23.02)
     temperature_range = (44.05)..(44.08)
-    names             = ["Timestamp", "PUE", "WUE", "Temp", "humidity"]
+    util_kwh_range    = (55.00)..(180.00)
+    it_kwh_range      = (45.00)..(150.00)
+    total_water_range = (0.0)..(123.0)
+    names             = ["Timestamp", "PUE", "WUE", "Temp", "humidity",
+                          "UtilKWh", "ITKWh", "TotaWaterUsage"]
     datacenters       = Power::Datacenter.all
 
     hour = 3_600
@@ -67,7 +71,10 @@ namespace :db do
             rand(pue_range).round(2),
             rand(wue_range).round(2),
             rand(temperature_range).round(2),
-            rand(humidity_range).round(2)
+            rand(humidity_range).round(2),
+            rand(util_kwh_range).round(2),
+            rand(it_kwh_range).round(2),
+            rand(total_water_range).round(2)
           ]
 
           points = builder.build(values)
