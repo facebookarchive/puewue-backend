@@ -8,9 +8,7 @@ displaying near real-time data from multiple data centers.
 ### Software requirements
 
 In order to deploy this application, see [README](README.md) for the initial
-requirements, plus a few extra requirements needed:
-
-- Redis 2.6.x
+requirements.
 
 Depending on your server platform, you will require to perform tasks like
 asset compilation and ensuring the right settings are in place for the

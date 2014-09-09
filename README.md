@@ -10,7 +10,8 @@ To run this application locally, you will need:
 - Ruby 1.9.3 (see patchlevel in .ruby-version)
 - Bundler (`gem install bundler`)
 - Foreman (`gem install foreman`)
-- ElasticSearch (0.20.4 at this time)
+- ElasticSearch (compatible versions 0.20 to latest 1.3.x)
+- Redis
 
 ### Installing dependencies
 
